@@ -1,17 +1,16 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
-import { ethers } from 'ethers';
-import { ApiParam, ApiTags } from '@nestjs/swagger'; // Import Swagger decorators
+import { ApiParam, ApiTags } from '@nestjs/swagger';
+import { EtherService } from './ether.service'; // Import EthereumService
 
-@ApiTags('Ether') // Use ApiTags decorator to specify controller tag
+@ApiTags('Ether')
 @Controller('ether')
 export class EtherController {
-  @ApiParam({
-    name: 'address',
-    description: 'Ethereum address to be validated',
-  }) // Use ApiParam decorator for parameter description
+  constructor(private readonly etherService: EtherService) {} // Inject EthereumService
+
+  @ApiParam({ name: 'address', description: 'Ethereum address' })
   @Get('validate/:address')
   validateAddress(@Param('address') address: string): string {
-    if (!ethers.isAddress(address)) {
+    if (!this.etherService.validateAddress(address)) {
       throw new NotFoundException('Invalid Ethereum address');
     }
 
