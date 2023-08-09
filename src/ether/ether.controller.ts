@@ -16,4 +16,14 @@ export class EtherController {
 
     return 'Valid Ethereum address';
   }
+
+  @Get('createWallet')
+  createWallet(): any {
+    const wallet = this.etherService.createWallet();
+    return {
+      address: wallet.address,
+      privateKey: wallet.privateKey,
+      mnemonic: wallet.mnemonic,
+    };
+  }
 }
