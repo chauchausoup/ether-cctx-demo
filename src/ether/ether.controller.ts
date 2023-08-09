@@ -1,7 +1,12 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiParam, ApiTags } from '@nestjs/swagger';
 import { EtherService } from './ether.service'; // Import EthereumService
-
 @ApiTags('Ether')
 @Controller('ether')
 export class EtherController {
@@ -25,5 +30,16 @@ export class EtherController {
       privateKey: wallet.privateKey,
       mnemonic: wallet.mnemonic,
     };
+  }
+
+  @ApiParam({ name: 'count', description: 'No of transaction to fetch' })
+  @Get('transactions/:count')
+  async getLatestTransactions(
+    @Param('count', ParseIntPipe) count: number,
+  ): Promise<any> {
+    if (!count) {
+      throw new NotFoundException('Enter a valid count integer');
+    }
+    return this.etherService.getLatestTransactions(count);
   }
 }
